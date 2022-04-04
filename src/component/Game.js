@@ -1,8 +1,12 @@
-import MediumFood from "./MediumFood";
+import MediumDonut from "./MediumDonut";
 import Container from "./Container";
 import Homer from "./Homer";
-import SmallFood from "./SmallFood";
-import BigFood from "./BigFood";
+import SmallDonut from "./SmallDonut";
+import BigDonut from "./BigDonut";
+import LastDonut from "./LastDonut";
+import winScreen from "../assets/win-screen.png";
+import loseScreen from "../assets/lose-screen.png";
+import Button from "./Button";
 
 function Game() {
     const _this = this;
@@ -14,37 +18,43 @@ function Game() {
         let targetsArray = [];
         _this.targetsArray = targetsArray;
 
-        const canvas = new Container();
-        canvas.el.setAttribute('id', 'container');
-        document.body.appendChild(canvas.el);
+        const container = new Container();
+        container.el.setAttribute('id', 'container');
+        document.body.appendChild(container.el);
 
         const myHomer = new Homer();
         myHomer.el.setAttribute('id', 'myHomer');
-        canvas.el.appendChild(myHomer.el);
+        container.el.appendChild(myHomer.el);
 
         for (var i = 0; i < 5; i++) {
-            let smallFood = new SmallFood(32);
-            smallFood.el.setAttribute('id', 'smallFood' + i);
-            smallFood.el.setAttribute('class', 'targets');
-            canvas.el.appendChild(smallFood.el);
-            _this.targetsArray.push(smallFood.el);
+            let smallDonut = new SmallDonut(i * 2, i * 2);
+            smallDonut.el.setAttribute('id', 'smallDonut' + i);
+            smallDonut.el.setAttribute('class', 'targets');
+            container.el.appendChild(smallDonut.el);
+            _this.targetsArray.push(smallDonut.el);
         }
 
         for (var i = 0; i < 5; i++) {
-            let mediumFood = new MediumFood(90);
-            mediumFood.el.setAttribute('id', 'mediumFood' + i);
-            mediumFood.el.setAttribute('class', 'targets');
-            canvas.el.appendChild(mediumFood.el);
-            _this.targetsArray.push(mediumFood.el);
+            let mediumDonut = new MediumDonut(i * 2, i * 2);
+            mediumDonut.el.setAttribute('id', 'mediumDonut' + i);
+            mediumDonut.el.setAttribute('class', 'targets');
+            container.el.appendChild(mediumDonut.el);
+            _this.targetsArray.push(mediumDonut.el);
         }
 
         for (var i = 0; i < 5; i++) {
-            let bigFood = new BigFood(120);
-            bigFood.el.setAttribute('id', 'bigFood' + i);
-            bigFood.el.setAttribute('class', 'targets');
-            canvas.el.appendChild(bigFood.el);
-            _this.targetsArray.push(bigFood.el);
+            let bigDonut = new BigDonut(i * 2, i * 2);
+            bigDonut.el.setAttribute('id', 'bigDonut' + i);
+            bigDonut.el.setAttribute('class', 'targets');
+            container.el.appendChild(bigDonut.el);
+            _this.targetsArray.push(bigDonut.el);
         }
+
+        let lastDonut = new LastDonut();
+        lastDonut.el.setAttribute('id', 'lastDonut');
+        lastDonut.el.setAttribute('class', 'targets');
+        container.el.appendChild(lastDonut.el);
+        _this.targetsArray.push(lastDonut.el);
 
     }
 
@@ -63,7 +73,7 @@ function Game() {
 
     function delayMouseFollow() {
         requestAnimationFrame(delayMouseFollow);
-        
+
         revisedMousePosX += (mousePosX - revisedMousePosX) / delay;
         revisedMousePosY += (mousePosY - revisedMousePosY) / delay;
 
@@ -92,14 +102,37 @@ function Game() {
                 let index = _this.targetsArray.indexOf(elem2);
                 _this.targetsArray.splice(index, 1);
                 if (_this.targetsArray.length == 0) {
-                    window.alert('Hai vinto!');
+                    const cont1 = document.getElementById("container");
+                    while (cont1.hasChildNodes()) {
+                        cont1.removeChild(cont1.lastChild);
+                    }
+                    cont1.style.backgroundImage = "url('" + winScreen + "')";
+                    cont1.style.zIndex = 1001;
+                    const button = new Button();
+                    document.addEventListener("click", function(){
+                        window.location.reload()
+                      });
+                    cont1.appendChild(button.el);
                 }
             } else {
-                window.alert('Hai perso!');
+                const cont2 = document.getElementById("container");
+                while (cont2.hasChildNodes()) {
+                    cont2.removeChild(cont2.lastChild);
+                }
+                cont2.style.backgroundImage = "url('" + loseScreen + "')";
+                cont2.style.zIndex = 1001;
+                const button = new Button();
+                document.addEventListener("click", function(){
+                    window.location.reload()
+                  });
+                cont2.appendChild(button.el);
             }
         }
     }
 
+    function refresh() {
+        window.location.reload()
+    }
 }
 
 export function setStyle(element, objProps) {
